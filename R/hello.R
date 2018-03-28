@@ -137,7 +137,7 @@ fetchRG<-function(meetingId){
 
   rg<-calculateRBM::masterRate(meetingId,0,1)
   rg<-rg[,c('event_competitor_id','pr','jtd')]
-  dat<-join(dat,rg,type='left')
+  dat<-plyr::join(dat,rg,type='left')
   return(dat)
 }
 
@@ -282,7 +282,7 @@ masterIntraday<-function(meetingId,race){
   }
 
   p<-p[order(p$venue_name,p$distance,p$matrix),]
-  rg<-join(rg,p,type='left')
+  rg<-plyr::join(rg,p,type='left')
   # Final error calculations
   #rg$mError<-mapply(mgnError,df$adjMargin,)
 
@@ -335,5 +335,5 @@ masterIntraday<-function(meetingId,race){
   #z<-list(payload=list(position=x))
   url<-paste("http://dw-staging-elb-1068016683.ap-southeast-2.elb.amazonaws.com/api/markets/analysis?event_number=",race,"&market_name=MTX_POSITIONS&meeting_id=",meetingId,"&provider_name=dw",sep="")
   r<-httr::POST(url,body = z,encode="json")
-  return(ff)
+  return(z)
 }
