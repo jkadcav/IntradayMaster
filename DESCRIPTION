@@ -1,0 +1,10 @@
+Package: IntradayMaster
+Type: Package
+Title: Intraday Module
+Version: 0.1.0
+Author: Josh Kadlec-Cavanagh
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: Intraday Module calculates and pushes the intraday track bias for a given meetingId and race
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
