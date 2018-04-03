@@ -223,15 +223,12 @@ getRaceAdj<-function(a,v,d){
 
 
   a<-a[a$venue_name==v & a$distance==d,]
-  print(head(a))
   c<-unique(a[!is.na(a$matrix),c('venue_name','distance','matrix')])
-  print(c)
   for(i in 1:nrow(c)){
     filter<-c$venue_name[i]==a$venue_name & c$distance[i]==a$distance & c$matrix[i]==a$matrix & !is.na(a$matrix)
 
     c$adjRace[i]<-mean(a$adjMargin[filter],na.rm=T)
   }
-  print(c)
   return(c)
 }
 
@@ -265,7 +262,6 @@ masterIntraday<-function(meetingId,race){
 
   df$exp<-mapply(fitExpMargin,as.numeric(df$pr),as.numeric(df$jtd))
   df$adjMargin<-mapply(mgnError,as.numeric(df$win_margin),as.numeric(df$exp))
-  print(unique(df$adjMargin))
   # subset out any XXX runs..
   #rg<-rg[rg$sig_fct!='XXX',]
 
@@ -273,9 +269,7 @@ masterIntraday<-function(meetingId,race){
 
 
   # calculate the expected
-  print(rg)
   p<-unique(rg[,c('venue_name','distance','matrix')])
-  print(p)
   p<-data.frame(p,adj=NA)
 
   for(i in 1:nrow(p)){
@@ -303,7 +297,6 @@ masterIntraday<-function(meetingId,race){
   f$wides<-as.numeric(chartr("ABCDEFGHI","123456789", toupper(substrRight(as.character(f$matrix),1))))
   f$longs<-as.numeric(stringr::str_replace(f$matrix, "([ABCDEFGH])", ""))
 
-  print(f)
   #f<-join(f,c,type='left')
 
   ff<-matrix(0,5,10)
@@ -320,7 +313,7 @@ masterIntraday<-function(meetingId,race){
         next
       }
 
-     ff[indsW[i],indsL[j]]<-f$adj[filter]
+     ff[indsW[i],indsL[j]]<-(-f$adj[filter])
     }
   }
 
@@ -337,7 +330,6 @@ masterIntraday<-function(meetingId,race){
   #ff<-lapply(split(ff, ff$wides), function(x) split(x[,c('adj')], x$longs))
 
   z<-list(payload=list(position=ff))
-  print(z)
   #z<-list(payload=list(position=x))
   url<-paste("http://dw-staging-elb-1068016683.ap-southeast-2.elb.amazonaws.com/api/markets/analysis?event_number=",race,"&market_name=MTX_POSITIONS&meeting_id=",meetingId,"&provider_name=dw",sep="")
   r<-httr::POST(url,body = z,encode="json")
