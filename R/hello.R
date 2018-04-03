@@ -38,7 +38,7 @@ tryCatch(library(calculateRBM),error=function(e){
 
 tryCatch(library(stringr),error=function(e){
   install.packages("stringr", repos="http://cran.rstudio.com/")
-  library(string)})
+  library(stringr)})
 
 isProduction<-function(){
   return(Sys.getenv("IS_PRODUCTION", NA))
@@ -223,15 +223,15 @@ getRaceAdj<-function(a,v,d){
 
 
   a<-a[a$venue_name==v & a$distance==d,]
-
-  c<-unique(a[,c('venue_name','distance','matrix')])
-
+  print(head(a))
+  c<-unique(a[!is.na(a$matrix),c('venue_name','distance','matrix')])
+  print(c)
   for(i in 1:nrow(c)){
     filter<-c$venue_name[i]==a$venue_name & c$distance[i]==a$distance & c$matrix[i]==a$matrix & !is.na(a$matrix)
 
     c$adjRace[i]<-mean(a$adjMargin[filter],na.rm=T)
   }
-
+  print(c)
   return(c)
 }
 
@@ -265,7 +265,7 @@ masterIntraday<-function(meetingId,race){
 
   df$exp<-mapply(fitExpMargin,as.numeric(df$pr),as.numeric(df$jtd))
   df$adjMargin<-mapply(mgnError,as.numeric(df$win_margin),as.numeric(df$exp))
-
+  print(unique(df$adjMargin))
   # subset out any XXX runs..
   #rg<-rg[rg$sig_fct!='XXX',]
 
@@ -273,9 +273,9 @@ masterIntraday<-function(meetingId,race){
 
 
   # calculate the expected
-
+  print(rg)
   p<-unique(rg[,c('venue_name','distance','matrix')])
-
+  print(p)
   p<-data.frame(p,adj=NA)
 
   for(i in 1:nrow(p)){
@@ -301,7 +301,7 @@ masterIntraday<-function(meetingId,race){
     #f$sample[i]<-nrow()
   }
   f$wides<-as.numeric(chartr("ABCDEFGHI","123456789", toupper(substrRight(as.character(f$matrix),1))))
-  f$longs<-as.numeric(str_replace(f$matrix, "([ABCDEFGH])", ""))
+  f$longs<-as.numeric(stringr::str_replace(f$matrix, "([ABCDEFGH])", ""))
 
 
   #f<-join(f,c,type='left')
