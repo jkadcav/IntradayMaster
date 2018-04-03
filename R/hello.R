@@ -314,7 +314,7 @@ masterIntraday<-function(meetingId,race){
   for(i in 5:1){
     for(j in 10:1){
 
-      filter<-f$wides==j & f$longs==i
+      filter<-f$wides==i & f$longs==j
       if(nrow(f[filter,])<1) {
         ff[indsW[i],indsL[j]]<-0
         next
@@ -337,6 +337,7 @@ masterIntraday<-function(meetingId,race){
   #ff<-lapply(split(ff, ff$wides), function(x) split(x[,c('adj')], x$longs))
 
   z<-list(payload=list(position=ff))
+  print(z)
   #z<-list(payload=list(position=x))
   url<-paste("http://dw-staging-elb-1068016683.ap-southeast-2.elb.amazonaws.com/api/markets/analysis?event_number=",race,"&market_name=MTX_POSITIONS&meeting_id=",meetingId,"&provider_name=dw",sep="")
   r<-httr::POST(url,body = z,encode="json")
