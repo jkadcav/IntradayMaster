@@ -303,7 +303,7 @@ masterIntraday<-function(meetingId,race){
   f$wides<-as.numeric(chartr("ABCDEFGHI","123456789", toupper(substrRight(as.character(f$matrix),1))))
   f$longs<-as.numeric(stringr::str_replace(f$matrix, "([ABCDEFGH])", ""))
 
-
+  print(f)
   #f<-join(f,c,type='left')
 
   ff<-matrix(0,5,10)
@@ -314,7 +314,7 @@ masterIntraday<-function(meetingId,race){
   for(i in 5:1){
     for(j in 10:1){
 
-      filter<-f$wides==i & f$longs==j
+      filter<-f$wides==j & f$longs==i
       if(nrow(f[filter,])<1) {
         ff[indsW[i],indsL[j]]<-0
         next
