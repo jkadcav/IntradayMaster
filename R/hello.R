@@ -36,6 +36,10 @@ tryCatch(library(calculateRBM),error=function(e){
   install_github("jkadcav/calculateRBM",force=T)
   library(calculateRBM)})
 
+tryCatch(library(stringr),error=function(e){
+  install.packages("stringr", repos="http://cran.rstudio.com/")
+  library(string)})
+
 isProduction<-function(){
   return(Sys.getenv("IS_PRODUCTION", NA))
 }
@@ -125,7 +129,7 @@ fetchRG<-function(meetingId){
                             LEFT OUTER JOIN trainers ON trainers.id = event_competitor_race_data.trainer_id
                             LEFT OUTER JOIN event_race_data ON event_race_data.id = events.event_race_datum_id
                             LEFT OUTER JOIN track_types ON track_types.id = event_race_data.track_type_id
-                            WHERE meetings.id =188726
+                            WHERE meetings.id = ",meetingId,"
                             AND event_competitor_race_data.scratched = FALSE
                             ORDER BY meeting_date ASC, event_number ASC,program_number ASC ;"))
 
@@ -223,7 +227,7 @@ getRaceAdj<-function(a,v,d){
   c<-unique(a[,c('venue_name','distance','matrix')])
 
   for(i in 1:nrow(c)){
-    filter<-c$venue_name[i]==a$venue_name & c$distance[i]==a$distance & c$matrix[i]==a$matrix
+    filter<-c$venue_name[i]==a$venue_name & c$distance[i]==a$distance & c$matrix[i]==a$matrix & !is.na(a$matrix)
 
     c$adjRace[i]<-mean(a$adjMargin[filter],na.rm=T)
   }
@@ -248,6 +252,7 @@ masterIntraday<-function(meetingId,race){
   mdate<-mdate[1]
 
   df<-df[df$meeting_date<mdate,]
+
   rg<-rg[rg$event_number<race,]
   # upper case the matrix variables
   rg$matrix<-toupper(rg$matrix)
@@ -296,7 +301,7 @@ masterIntraday<-function(meetingId,race){
     #f$sample[i]<-nrow()
   }
   f$wides<-as.numeric(chartr("ABCDEFGHI","123456789", toupper(substrRight(as.character(f$matrix),1))))
-  f$longs<-as.numeric(substr(f$matrix,1,1))
+  f$longs<-as.numeric(str_replace(f$matrix, "([ABCDEFGH])", ""))
 
 
   #f<-join(f,c,type='left')
@@ -311,7 +316,7 @@ masterIntraday<-function(meetingId,race){
 
       filter<-f$wides==i & f$longs==j
       if(nrow(f[filter,])<1) {
-        ff[i,j]<-0
+        ff[indsW[i],indsL[j]]<-0
         next
       }
 
