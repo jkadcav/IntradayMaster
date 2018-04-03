@@ -333,5 +333,5 @@ masterIntraday<-function(meetingId,race){
   #z<-list(payload=list(position=x))
   url<-paste("http://dw-staging-elb-1068016683.ap-southeast-2.elb.amazonaws.com/api/markets/analysis?event_number=",race,"&market_name=MTX_POSITIONS&meeting_id=",meetingId,"&provider_name=dw",sep="")
   r<-httr::POST(url,body = z,encode="json")
-  return(z)
+
 }
