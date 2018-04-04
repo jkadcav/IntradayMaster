@@ -296,7 +296,8 @@ masterIntraday<-function(meetingId,race){
   }
   f$wides<-as.numeric(chartr("ABCDEFGHI","123456789", toupper(substrRight(as.character(f$matrix),1))))
   f$longs<-as.numeric(stringr::str_replace(f$matrix, "([ABCDEFGH])", ""))
-  f<-f[!is.na(f$matrix),]
+  f<-f[!is.na(f$matrix) & f$matrix!='3NB',]
+  print(f)
   #f<-join(f,c,type='left')
 
   ff<-matrix(0,5,10)
@@ -316,7 +317,6 @@ masterIntraday<-function(meetingId,race){
      ff[indsW[i],indsL[j]]<-(-f$adj[filter])
     }
   }
-
   ff<-t(ff)
   #f<-f[order(f$adj),]
   #f<-f[,c('longs','wides','adj')]
