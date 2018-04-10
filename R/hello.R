@@ -254,7 +254,10 @@ masterIntraday<-function(meetingId,race){
   # upper case the matrix variables
   rg$matrix<-toupper(rg$matrix)
   df$matrix<-toupper(df$matrix)
+  print(rg)
+  rg$win_margin<-as.numeric(rg$win_margin)
 
+  rg<-rg[rg$win_margin<20,]
   # calculate expected and errors..
   rg$exp<-mapply(fitExpMargin,as.numeric(rg$pr),as.numeric(rg$jtd))
   rg$adjMargin<-mapply(mgnError,as.numeric(rg$win_margin),as.numeric(rg$exp))
